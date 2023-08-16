@@ -1,12 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-use app\http\Controller\TacheController;
-
-use Illuminate\Http\Request;
-
-use app\Models\Tachee;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TacheController;
 
 
 /*
@@ -20,53 +16,24 @@ use app\Models\Tachee;
 |
 */
 
-Route::get('/Tache',[TacheController::class,'listeTache']);
-
-Route::get('/master',function () {
-    return view ('master');
+Route::get('/', function () {
+    return view('welcome');
 });
 
+Auth::routes();
 
-Route::get('/login',function () {
-    return view ('partials.login');
-});
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/dashboard', [HomeController::class, 'dashboard']);
 
-/* chemin vers l'ajout de tâche*/
+Route::get('/dashboard', [HomeController::class, 'dashboard']);
 
-Route::get('/ajouterTache',function () {
-    return view ('layouts.ajouterTache');
-});
+Route::get('/ajouterTache', [TacheController::class, 'ajouterTache']);
 
-/*traiter de la donnée ajoutée*/
+Route::post('/ajouter/traitement',[Tachecontroller::class, 'ajouterTache_traitement']);
 
-Route::post('/ajouter/traitement',function ( Request $request) {
+Route::get('/deleteTache{id}', [TacheController::class, 'deleteTache']);
 
-    $request ->validate([
+Route::get('/updateTache{id}',[TacheController::class, 'updateTache']);
 
-        'titre'=> 'required',
-        'description'=> 'required',
-        'statut'=> 'required',
-    ]);
-
-    $tachee = new Tachee();
-
-    $tachee -> titre = $request-> titre;
-    $tachee -> description = $request -> description;
-    $tachee -> statut = $request-> statut;
-
-    $tachee -> save();
-
-    return redirect('master')-> with('status', 'Tâche bien ajoutée dans la base');
-
-});
-
-
-Route::get('/mettreajour',function () {
-    return view ('layouts.mettreajour');
-});
-
-
-Route::get('/supprimer une tache',function () {
-    return view ('layouts.supprimer une tache');
-});
+Route::post('/update/traitement',[Tachecontroller::class, 'update_Tache_traitement']);
